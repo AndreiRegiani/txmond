@@ -10,12 +10,17 @@ This service monitors subscribed wallets to watch for new transactions on every 
 
 ## REST endpoints
 
+[HTTPie](https://httpie.io/cli)
+
 ```bash
-GET /v1/ethereum/block/current
+# Get the current block (last processed by the daemon)
+http GET :9901/v1/ethereum/block/current/
 
-POST /v1/ethereum/wallet { "address": "0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B" }
+# Add a wallet to start being monitored
+http --json POST :9901/v1/ethereum/wallet/ address="0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B"
 
-GET /v1/ethereum/wallet?address=0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B
+# Get all transactions since being inserted
+http GET :9901/v1/ethereum/wallet/transactions/ address=="0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B"
 ```
 
 ## Supported storages
