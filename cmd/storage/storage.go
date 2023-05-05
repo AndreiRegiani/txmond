@@ -9,6 +9,7 @@ type Storage interface {
 	InsertWallet(wallet Wallet) error
 	GetWallets() ([]Wallet, error)
 
+	InsertTransaction(address string, transaction Transaction) error
 	GetTransactions(address string) ([]Transaction, error)
 }
 

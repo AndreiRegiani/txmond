@@ -47,6 +47,17 @@ func (s *TempStorage) GetWallets() ([]Wallet, error) {
 	return wallets.([]Wallet), nil
 }
 
+func (s *TempStorage) InsertTransaction(address string, transaction Transaction) error {
+	transactions, _ := s.hashmap.LoadOrStore(address, []Transaction{})
+	transactionsSlice := transactions.([]Transaction)
+	s.hashmap.Store(address, append(transactionsSlice, transaction))
+	return nil
+}
+
 func (s *TempStorage) GetTransactions(address string) ([]Transaction, error) {
-	return nil, nil
+	transactions, ok := s.hashmap.Load(address)
+	if !ok {
+		return []Transaction{}, nil
+	}
+	return transactions.([]Transaction), nil
 }

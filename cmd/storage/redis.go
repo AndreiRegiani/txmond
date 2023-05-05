@@ -24,6 +24,10 @@ func (s *RedisStorage) GetWallets() ([]Wallet, error) {
 	panic("txmond: redis storage backend is not implemented")
 }
 
+func (s *RedisStorage) InsertTransaction(adress string, transaction Transaction) error {
+	panic("txmond: redis storage backend is not implemented")
+}
+
 func (s *RedisStorage) GetTransactions(address string) ([]Transaction, error) {
 	panic("txmond: redis storage backend is not implemented")
 }
