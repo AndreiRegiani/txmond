@@ -10,7 +10,7 @@ type Storage interface {
 	GetWallets() ([]Wallet, error)
 
 	InsertTransaction(address string, transaction Transaction) error
-	GetTransactions(address string) ([]Transaction, error)
+	GetTransactionsByAddress(address string) ([]Transaction, error)
 }
 
 type Wallet struct {
@@ -18,8 +18,7 @@ type Wallet struct {
 }
 
 type Transaction struct {
-	BlockNumber string `json:"blockNumber"`
-	From        string `json:"from"`
-	To          string `json:"to"`
-	Value       string `json:"value"`
+	From  string `json:"from"`
+	To    string `json:"to"`
+	Value string `json:"value"`
 }

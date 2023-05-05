@@ -28,6 +28,6 @@ func (s *RedisStorage) InsertTransaction(adress string, transaction Transaction)
 	panic("txmond: redis storage backend is not implemented")
 }
 
-func (s *RedisStorage) GetTransactions(address string) ([]Transaction, error) {
+func (s *RedisStorage) GetTransactionsByAddress(address string) ([]Transaction, error) {
 	panic("txmond: redis storage backend is not implemented")
 }

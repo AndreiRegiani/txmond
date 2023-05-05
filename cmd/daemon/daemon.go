@@ -32,11 +32,11 @@ func polling() {
 	// Skip polling the blockchain if there are no wallets beiung monitored yet
 	wallets, err := storage.Db.GetWallets()
 	if err != nil {
-		log.Printf("Daemon: db error: GetWallets: %v", err)
+		log.Printf("Daemon: db error: GetWallets: %v\n", err)
 		return
 	}
 
-	log.Printf("Daemon: monitoring %d wallets", len(wallets))
+	log.Printf("Daemon: monitoring %d wallets\n", len(wallets))
 
 	if len(wallets) == 0 {
 		return
@@ -44,17 +44,17 @@ func polling() {
 
 	lastBlock, err := storage.Db.GetLastProcessedBlock()
 	if err != nil {
-		log.Printf("Daemon: db error: GetLastProcessedBlock: %v", err)
+		log.Printf("Daemon: db error: GetLastProcessedBlock: %v\n", err)
 		return
 	}
 
 	currentBlock, err := blockchain.BlockNumber()
 	if err != nil {
-		log.Printf("Daemon: blockchain error: BlockNumber: %v", err)
+		log.Printf("Daemon: blockchain error: BlockNumber: %v\n", err)
 		return
 	}
 
-	log.Printf("Daemon: lastBlock: %d | currentBlock: %d", lastBlock, currentBlock)
+	log.Printf("Daemon: lastBlock: %d | currentBlock: %d\n", lastBlock, currentBlock)
 
 	// First run starts from the current block height
 	if lastBlock == 0 {
@@ -72,28 +72,28 @@ func polling() {
 }
 
 func processBlock(blockNumber uint64) {
-	log.Printf("Daemon: process block: %d", blockNumber)
+	log.Printf("Daemon: process block: %d\n", blockNumber)
 
 	wallets, err := storage.Db.GetWallets()
 	if err != nil {
-		log.Printf("Daemon: db error: GetWallets: %v", err)
+		log.Printf("Daemon: db error: GetWallets: %v\n", err)
 		return
 	}
 
 	transactions, err := blockchain.GetTransactions(blockNumber)
 	if err != nil {
-		log.Printf("Daemon: blockchain error: GetTransactions: %v", err)
+		log.Printf("Daemon: blockchain error: GetTransactions: %v\n", err)
 		return
 	}
 
 	for _, transaction := range transactions {
 		for _, wallet := range wallets {
 			if transaction.From == wallet.Address || transaction.To == wallet.Address {
-				fmt.Printf("Daemon: found transaction for wallet: %s", wallet.Address)
+				log.Printf("Daemon: found transaction for wallet: %s\n", wallet.Address)
 
 				err = storage.Db.InsertTransaction(wallet.Address, transaction)
 				if err != nil {
-					log.Printf("Daemon: db error: InsertTransaction: %v", err)
+					log.Printf("Daemon: db error: InsertTransaction: %v\n", err)
 					return
 				}
 

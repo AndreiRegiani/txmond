@@ -16,7 +16,7 @@ func blockCurrentHandler(w http.ResponseWriter, r *http.Request) {
 
 	lastProcessedBlock, _ := storage.Db.GetLastProcessedBlock()
 
-	responseData := map[string]interface{}{
+	responseData := map[string]any{
 		"lastProcessedBlock": lastProcessedBlock,
 	}
 
@@ -49,7 +49,7 @@ func walletHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Return a success responseData
-	responseData := map[string]interface{}{
+	responseData := map[string]any{
 		"success": true,
 	}
 
@@ -59,6 +59,26 @@ func walletHandler(w http.ResponseWriter, r *http.Request) {
 
 func walletTransactionsHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("REST: GET /v1/ethereum/wallet/transactions/")
+
+	// Extract the address parameter from the URL
+	address := r.URL.Query().Get("address")
+	if address == "" {
+		http.Error(w, "address parameter is required", http.StatusBadRequest)
+		return
+	}
+
+	transactions, err := storage.Db.GetTransactionsByAddress(address)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	responseData := map[string]any{
+		"transactions": transactions,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(responseData)
 }
 
 func Listen() {
@@ -71,6 +91,6 @@ func Listen() {
 		log.Fatal(err)
 	}
 
-	log.Printf("REST: serving API on port %d", port)
+	log.Printf("REST: serving API on port %d\n", port)
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), nil))
 }

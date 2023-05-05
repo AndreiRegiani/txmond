@@ -54,7 +54,7 @@ func (s *TempStorage) InsertTransaction(address string, transaction Transaction)
 	return nil
 }
 
-func (s *TempStorage) GetTransactions(address string) ([]Transaction, error) {
+func (s *TempStorage) GetTransactionsByAddress(address string) ([]Transaction, error) {
 	transactions, ok := s.hashmap.Load(address)
 	if !ok {
 		return []Transaction{}, nil
