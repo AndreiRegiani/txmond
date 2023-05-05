@@ -58,4 +58,18 @@ func polling() {
 
 func processBlock(blockNumber uint64) {
 	log.Printf("Daemon: processing block: %d", blockNumber)
+
+	wallets, err := storage.Db.GetWallets()
+	if err != nil {
+		log.Printf("Daemon: db error: GetWallets: %v", err)
+		return
+	}
+
+	for _, wallet := range wallets {
+		processWallet(blockNumber, wallet)
+	}
+}
+
+func processWallet(blockNumber uint64, wallet storage.Wallet) {
+	log.Printf("Daemon: processing block: %d: wallet: %s", blockNumber, wallet.Address)
 }

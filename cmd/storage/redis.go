@@ -15,3 +15,15 @@ func (s *RedisStorage) GetLastProcessedBlock() (uint64, error) {
 func (s *RedisStorage) SetLastProcessedBlock(value uint64) error {
 	panic("txmond: redis storage backend is not implemented")
 }
+
+func (s *RedisStorage) InsertWallet(wallet Wallet) error {
+	panic("txmond: redis storage backend is not implemented")
+}
+
+func (s *RedisStorage) GetWallets() ([]Wallet, error) {
+	panic("txmond: redis storage backend is not implemented")
+}
+
+func (s *RedisStorage) GetTransactions(address string) ([]Transaction, error) {
+	panic("txmond: redis storage backend is not implemented")
+}

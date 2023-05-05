@@ -26,6 +26,35 @@ func blockCurrentHandler(w http.ResponseWriter, r *http.Request) {
 
 func walletHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("REST: POST /v1/ethereum/wallet/")
+
+	var requestBody struct {
+		Address string `json:"address"`
+	}
+
+	err := json.NewDecoder(r.Body).Decode(&requestBody)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	wallet := storage.Wallet{
+		Address: requestBody.Address,
+	}
+
+	// Insert the wallet into the database
+	err = storage.Db.InsertWallet(wallet)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Return a success responseData
+	responseData := map[string]interface{}{
+		"success": true,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(responseData)
 }
 
 func walletTransactionsHandler(w http.ResponseWriter, r *http.Request) {
