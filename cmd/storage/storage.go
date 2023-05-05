@@ -18,8 +18,8 @@ type Wallet struct {
 }
 
 type Transaction struct {
-	FromAddress string
-	ToAddress   string
-	Value       uint64
-	BlockHeight uint64
+	BlockNumber string `json:"blockNumber"`
+	From        string `json:"from"`
+	To          string `json:"to"`
+	Value       string `json:"value"`
 }

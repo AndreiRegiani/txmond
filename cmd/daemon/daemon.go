@@ -1,6 +1,7 @@
 package daemon
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -25,7 +26,18 @@ func Start() {
 }
 
 func polling() {
-	log.Println("Daemon: polling")
+	// Skip polling the blockchain if there are no wallets beiung monitored yet
+	wallets, err := storage.Db.GetWallets()
+	if err != nil {
+		log.Printf("Daemon: db error: GetWallets: %v", err)
+		return
+	}
+
+	log.Printf("Daemon: monitoring %d wallets", len(wallets))
+
+	if len(wallets) == 0 {
+		return
+	}
 
 	lastBlock, err := storage.Db.GetLastProcessedBlock()
 	if err != nil {
@@ -57,7 +69,7 @@ func polling() {
 }
 
 func processBlock(blockNumber uint64) {
-	log.Printf("Daemon: processing block: %d", blockNumber)
+	log.Printf("Daemon: process block: %d", blockNumber)
 
 	wallets, err := storage.Db.GetWallets()
 	if err != nil {
@@ -65,11 +77,23 @@ func processBlock(blockNumber uint64) {
 		return
 	}
 
-	for _, wallet := range wallets {
-		processWallet(blockNumber, wallet)
+	transactions, err := blockchain.GetTransactions(blockNumber)
+	if err != nil {
+		log.Printf("Daemon: blockchain error: GetTransactions: %v", err)
+		return
 	}
-}
 
-func processWallet(blockNumber uint64, wallet storage.Wallet) {
-	log.Printf("Daemon: processing block: %d: wallet: %s", blockNumber, wallet.Address)
+	for _, transaction := range transactions {
+		for _, wallet := range wallets {
+			if transaction.From == wallet.Address || transaction.To == wallet.Address {
+				fmt.Printf("Daemon: found transaction for wallet: %s", wallet.Address)
+
+				err = storage.Db.InsertTransaction(wallet.Address, transaction)
+				if err != nil {
+					log.Printf("Daemon: db error: InsertTransaction: %v", err)
+					return
+				}
+			}
+		}
+	}
 }
