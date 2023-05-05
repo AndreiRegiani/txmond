@@ -38,16 +38,8 @@ JSON Payload send to `TXMOND_WEBHOOK_URL=http://localhost:3000/txmond`
 
 ```json
 {
-    "block": {
-        "number": 1234567890
-    },
-
-    "transactions": [
-        {
-            "from": "0x1234567890",
-            "to": "0x1234567890",
-            "value": "100",
-        }
-    ]
+   "from": "0x123",
+   "to": "0x456",
+   "value": "100",
 }
 ```

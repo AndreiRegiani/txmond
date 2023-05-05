@@ -1,8 +1,11 @@
 package daemon
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"strconv"
 	"time"
@@ -93,7 +96,30 @@ func processBlock(blockNumber uint64) {
 					log.Printf("Daemon: db error: InsertTransaction: %v", err)
 					return
 				}
+
+				if webhookURL := os.Getenv("TXMOND_WEBHOOK_URL"); webhookURL != "" {
+					sendWebhook(webhookURL, transaction)
+				}
 			}
 		}
 	}
+}
+
+func sendWebhook(url string, transaction storage.Transaction) error {
+	payload, err := json.Marshal(transaction)
+	if err != nil {
+		return err
+	}
+
+	resp, err := http.Post(url, "application/json", bytes.NewBuffer(payload))
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("failed to send webhook, status code: %d", resp.StatusCode)
+	}
+
+	return nil
 }
