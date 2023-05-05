@@ -2,7 +2,7 @@
 
 Proof of Concept: blockchain transactions _(tx)_ monitoring _(mon)_ daemon _(d)_.
 
-This service monitors subscribed wallets to watch for new transactions on every new block. `txmond` exposes a REST API (add wallet, get transactions) and has a optional webhook to pass the event as soon as possible (e.g. into another service delivering the push notifications).
+This service monitors a list of subscribed wallets and watches for new transactions on every new block. `txmond` exposes a REST API (add wallet, get transactions), and has an optional webhook to pass the event as soon as possible (e.g. into another service delivering the push notifications).
 
 ## Supported blockchains
 
@@ -34,7 +34,7 @@ See `.env.dist`
 
 ## Webhook
 
-JSON Payload send to `TXMOND_WEBHOOK_URL=http://localhost:3000/txmond`
+HTTP callback to `TXMOND_WEBHOOK_URL=http://localhost:3000/txmond`
 
 ```json
 {
