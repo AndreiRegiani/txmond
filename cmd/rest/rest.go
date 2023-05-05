@@ -14,6 +14,7 @@ import (
 func blockCurrentHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("REST: GET /v1/ethereum/block/current/")
 
+	// Processed by the daemon
 	lastProcessedBlock, _ := storage.Db.GetLastProcessedBlock()
 
 	responseData := map[string]any{
@@ -41,14 +42,13 @@ func walletHandler(w http.ResponseWriter, r *http.Request) {
 		Address: requestBody.Address,
 	}
 
-	// Insert the wallet into the database
+	// Daemon will be processing this wallet
 	err = storage.Db.InsertWallet(wallet)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	// Return a success responseData
 	responseData := map[string]any{
 		"success": true,
 	}
@@ -60,7 +60,7 @@ func walletHandler(w http.ResponseWriter, r *http.Request) {
 func walletTransactionsHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("REST: GET /v1/ethereum/wallet/transactions/")
 
-	// Extract the address parameter from the URL
+	// GET param: ?address=
 	address := r.URL.Query().Get("address")
 	if address == "" {
 		http.Error(w, "address parameter is required", http.StatusBadRequest)

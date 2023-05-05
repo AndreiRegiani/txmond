@@ -43,3 +43,5 @@ JSON Payload send to `TXMOND_WEBHOOK_URL=http://localhost:3000/txmond`
    "value": "100",
 }
 ```
+
+Testing: `npx http-echo-server`
