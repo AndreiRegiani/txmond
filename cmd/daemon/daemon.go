@@ -29,7 +29,7 @@ func Start() {
 }
 
 func polling() {
-	// Skip polling the blockchain if there are no wallets beiung monitored yet
+	// Skip polling the blockchain if there are no wallets being monitored yet
 	wallets, err := storage.Db.GetWallets()
 	if err != nil {
 		log.Printf("Daemon: db error: GetWallets: %v\n", err)
