@@ -1,6 +1,5 @@
-.PHONY: build clean lint build-docker
+.PHONY: build clean lint ci-lint build-docker
 
-GO_FILES = $(wildcard *.go **/*.go)
 BINARY = txmond
 DOCKER_IMAGE = txmond:latest
 
@@ -12,7 +11,10 @@ clean:
 	rm -f $(BINARY)
 
 lint:
-	golint $(GO_FILES)
+	golint  ./cmd/...
+
+ci-lint:
+	golangci-lint run ./cmd/...
 
 build-docker:
 	docker build -t $(DOCKER_IMAGE) .

@@ -13,7 +13,7 @@ import (
 	"github.com/AndreiRegiani/txmond/cmd/storage"
 )
 
-type JsonRpcRequest struct {
+type JSONRPCRequest struct {
 	Jsonrpc string   `json:"jsonrpc"`
 	Method  string   `json:"method"`
 	Params  []string `json:"params"`
@@ -33,7 +33,7 @@ type BlockResultTransactions struct {
 }
 
 func BlockNumber() (uint64, error) {
-	jsonReq := &JsonRpcRequest{
+	jsonReq := &JSONRPCRequest{
 		Jsonrpc: "2.0",
 		Method:  "eth_blockNumber",
 		Params:  []string{},
@@ -76,7 +76,7 @@ func BlockNumber() (uint64, error) {
 func GetTransactions(blockNumber uint64) ([]storage.Transaction, error) {
 	blockNumberHex := fmt.Sprintf("0x%x", blockNumber)
 
-	jsonReq := &JsonRpcRequest{
+	jsonReq := &JSONRPCRequest{
 		Jsonrpc: "2.0",
 		Method:  "eth_getBlockByNumber",
 		Params:  []string{blockNumberHex, strconv.FormatBool(true)},

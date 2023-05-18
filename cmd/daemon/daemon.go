@@ -68,7 +68,11 @@ func polling() {
 		}
 	}
 
-	storage.Db.SetLastProcessedBlock(currentBlock)
+	err = storage.Db.SetLastProcessedBlock(currentBlock)
+	if err != nil {
+		log.Printf("Daemon: db error: SetLastProcessedBlock: %v\n", err)
+		return
+	}
 }
 
 func processBlock(blockNumber uint64) {
@@ -97,8 +101,14 @@ func processBlock(blockNumber uint64) {
 					return
 				}
 
+				// Send webhook if configured
 				if webhookURL := os.Getenv("TXMOND_WEBHOOK_URL"); webhookURL != "" {
-					sendWebhook(webhookURL, transaction)
+					go func(url string, tx storage.Transaction) {
+						err := sendWebhook(url, tx)
+						if err != nil {
+							log.Printf("Daemon: webhook error: %v\n", err)
+						}
+					}(webhookURL, transaction)
 				}
 			}
 		}

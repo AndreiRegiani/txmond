@@ -22,7 +22,10 @@ func blockCurrentHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(responseData)
+	err := json.NewEncoder(w).Encode(responseData)
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	}
 }
 
 func walletHandler(w http.ResponseWriter, r *http.Request) {
@@ -54,7 +57,10 @@ func walletHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(responseData)
+	err = json.NewEncoder(w).Encode(responseData)
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	}
 }
 
 func walletTransactionsHandler(w http.ResponseWriter, r *http.Request) {
@@ -78,7 +84,10 @@ func walletTransactionsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(responseData)
+	err = json.NewEncoder(w).Encode(responseData)
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	}
 }
 
 func Listen() {
